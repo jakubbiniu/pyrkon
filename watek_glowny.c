@@ -7,6 +7,14 @@ void mainLoop()
     int tag;
     int perc;
 
+	// wylosuj 2 workshop_id
+	int workshop_id1 = random()%number_of_workshops;
+	int workshop_id2 = random()%number_of_workshops;
+	while(workshop_id1 == workshop_id2){
+		workshop_id2 = random()%number_of_workshops;
+	}
+	
+
     while (stan != InFinish) {
 	switch (stan) {
 	    case InRun: 

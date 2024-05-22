@@ -23,8 +23,19 @@ extern int size;
 extern int ackCount;
 extern pthread_t threadKom;
 
-extern int zegar;
 extern pthread_mutex_t zegarMut;
+
+extern int zegar;
+extern int number_of_tickets;
+extern int number_of_workshops;
+extern int number_of_people_per_workshop;
+extern int number_of_participants;
+extern int number_of_workshops_per_participant;
+extern int number_of_acks[5];
+extern int waiting_queue[4][5];
+extern int indexes_for_waiting_queue[4];
+extern int finished;
+
 
 /* macro debug - działa jak printf, kiedy zdefiniowano
    DEBUG, kiedy DEBUG niezdefiniowane działa jak instrukcja pusta 
