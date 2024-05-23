@@ -45,6 +45,7 @@ void inicjuj_typ_pakietu()
     offsets[0] = offsetof(packet_t, ts);
     offsets[1] = offsetof(packet_t, src);
     offsets[2] = offsetof(packet_t, data);
+    offsets[3] = offsetof(packet_t, workshop_id);
 
     MPI_Type_create_struct(NITEMS, blocklengths, offsets, typy, &MPI_PAKIET_T);
 
@@ -52,11 +53,12 @@ void inicjuj_typ_pakietu()
 }
 
 /* opis patrz util.h */
-void sendPacket(packet_t *pkt, int destination, int tag)
+void sendPacket(packet_t *pkt, int destination, int tag, int workshop_id_request)
 {
     int freepkt=0;
     if (pkt==0) { pkt = malloc(sizeof(packet_t)); freepkt=1;}
     pkt->src = rank;
+    pkt->workshop_id = workshop_id_request;
     MPI_Send( pkt, 1, MPI_PAKIET_T, destination, tag, MPI_COMM_WORLD);
 
     pthread_mutex_lock(&zegarMut);
