@@ -12,13 +12,10 @@ void mainLoop()
     int is_message = FALSE;
     packet_t pakiet;
 
-	printf("moj id to %d\n", rank);
-
 	packet_t *pkt = malloc(sizeof(packet_t));
     while (stan != InFinish) {
-		workshop_id = my_workshops[rank][my_current_workshop[rank]];
+		workshop_id = my_workshops[rank][workshop_count[rank]];
 	switch (stan) {
-
 		case BeginPyrkon:
 		my_workshops[rank][0] = 0;
 		for (int i=1;i<=number_of_workshops_per_participant;i++){
@@ -40,7 +37,7 @@ void mainLoop()
 		perc = random()%100;
 		if ( perc < 25 ) {
 		    debug("Perc: %d", perc);
-			if(my_current_workshop[rank] == 0){
+			if(workshop_count[rank] == 0){
 				println("Chcę wejść na pyrkon")
 			}
 			else{
@@ -49,7 +46,7 @@ void mainLoop()
 		    debug("Zmieniam stan na wysyłanie");
 		    packet_t *pkt = malloc(sizeof(packet_t));
 		    pkt->data = perc;
-			pkt->workshop_id = my_workshops[rank][my_current_workshop[rank]];
+			pkt->workshop_id = my_workshops[rank][workshop_count[rank]];
 		    number_of_acks[rank] = 0;
 		    for (int i=0;i<=size-1;i++)
 			if (i!=rank){
@@ -61,7 +58,7 @@ void mainLoop()
 					println("Wysyłam request na warsztat %d do %d", pkt->workshop_id, i)
 				}
 			}
-			if(my_current_workshop[rank] == 0){
+			if(workshop_count[rank] == 0){
 				changeState(InWantPyrkon);
 			}
 			else{
@@ -83,7 +80,7 @@ void mainLoop()
 		// tutaj zapewne jakiś semafor albo zmienna warunkowa
 		// bo aktywne czekanie jest BUE
 		if (number_of_acks[rank] >= number_of_participants - number_of_tickets){
-			my_current_workshop[rank] += 1;
+			workshop_count[rank] += 1;
 			number_of_acks[rank] = 0;
 			println("Jestem na pyrkonie")
 			on_pyrkon[rank] = 1;
@@ -92,13 +89,13 @@ void mainLoop()
 		break;
 		case InWant:
 
-		println("Czekam na wejście na warsztat %d", workshop_id)
+		println("mój ack_count %d Czekam na wejście na warsztat %d", number_of_acks[rank],workshop_id)
 		// tutaj zapewne jakiś semafor albo zmienna warunkowa
 		// bo aktywne czekanie jest BUE
 		if (number_of_acks[rank] >= number_of_participants - number_of_people_per_workshop){
 			println("Jestem na warsztacie %d", workshop_id)
 			number_of_acks[rank] = 0;
-			my_current_workshop[rank] += 1;
+			workshop_count[rank] += 1;
 		    changeState(InSection);
 		}
 		break;
@@ -121,8 +118,9 @@ void mainLoop()
 				sendPacket( 0, waiting_queue[workshop_id][i], ACK, workshop_id);
 			}
 			indexes_for_waiting_queue[workshop_id] = 0;
-			if (my_current_workshop[rank] == number_of_workshops_per_participant){
+			if (workshop_count[rank] == number_of_workshops_per_participant){
 				println("Wychodzę z pyrkonu")
+				on_pyrkon[rank] = 0;
 				debug("Zmieniam stan na wysyłanie");
 				pkt->data = perc;
 				zegar += 1;

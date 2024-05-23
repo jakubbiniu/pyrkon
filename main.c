@@ -33,7 +33,7 @@ int number_of_acks[4] = {0,0,0,0}; // dla kazdego uczestnika liczymy liczbe acks
 int waiting_queue[3][4]; // kolejka oczekujących na bilet uczestników dla kazdego warsztatu + dla pyrkonu
 int indexes_for_waiting_queue[3]; // indeksy dla kolejki oczekujących na bilet dla każdego warsztatu + dla pyrkonu
 int finished = 0; // liczba uczestników, którzy zakończyli warsztaty
-int my_current_workshop[4] = {0,0,0,0}; // dla każdego uczestnika zapisujemy na który warsztat z listy sie obecnie wybiera (chodzi o indeks)
+int workshop_count[4] = {0,0,0,0}; // dla każdego uczestnika liczymy liczbę warsztatów, na których był licząc też pyrkon jako jeden warsztat
 int my_workshops[4][3]; // dla każdego uczestnika zapisujemy listę warsztatów, na które się zapisał (zacyznamy od 0 - pyrkonu) 
 int on_pyrkon[4] = {0,0,0,0}; // dla każdego uczestnika zapisujemy czy jest na pyrkonie
 
