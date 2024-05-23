@@ -121,7 +121,7 @@ void mainLoop()
 				println("Wychodzę z pyrkonu")
 				on_pyrkon[rank] = 0;
 				debug("Zmieniam stan na wysyłanie");
-				pkt->data = perc;
+				// pkt->data = perc;
 				zegar += 1;
 				for (int i=0;i<=number_of_participants-1;i++){
 					if (i!=rank){
@@ -137,16 +137,16 @@ void mainLoop()
 			else{
 				changeState( InRun );
 			}
-		    free(pkt);
-
+		    // free(pkt);
 		break;
 		case FinishedWorkshops:
 		println("Koniec warsztatów")
 		finished++;
 		while(finished < number_of_tickets){
-			sleep(1);
+			sleep(SEC_IN_STATE);
 		}
 		changeState(BeginPyrkon);
+		break;
 	    default: 
 		break;
         }
