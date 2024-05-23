@@ -22,6 +22,7 @@ extern int rank;
 extern int size;
 extern int ackCount;
 extern pthread_t threadKom;
+extern int workshop_id;
 
 extern pthread_mutex_t zegarMut;
 
@@ -31,10 +32,13 @@ extern int number_of_workshops;
 extern int number_of_people_per_workshop;
 extern int number_of_participants;
 extern int number_of_workshops_per_participant;
-extern int number_of_acks[3];
-extern int waiting_queue[4][3];
-extern int indexes_for_waiting_queue[4];
+extern int number_of_acks[4];
+extern int waiting_queue[3][4];
+extern int indexes_for_waiting_queue[3];
 extern int finished;
+extern int my_current_workshop[4];
+extern int my_workshops[4][3];
+extern int on_pyrkon[4];
 
 
 /* macro debug - działa jak printf, kiedy zdefiniowano

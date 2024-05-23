@@ -12,6 +12,7 @@
  *
  */
 int rank, size;
+int workshop_id;
 int ackCount = 0;
 /* 
  * Każdy proces ma dwa wątki - główny i komunikacyjny
@@ -22,16 +23,19 @@ int ackCount = 0;
 
 pthread_t threadKom;
 
-int zegar=0;
-int number_of_tickets=2;
-int number_of_workshops=3;
-int number_of_people_per_workshop=1;
-int number_of_participants=3;
-int number_of_workshops_per_participant=2;
-int number_of_acks[3]; // dla kazdego uczestnika liczymy liczbe acks
-int waiting_queue[4][3]; // kolejka oczekujących na bilet uczestników dla kazdego warsztatu + dla pyrkonu
-int indexes_for_waiting_queue[4]; // indeksy dla kolejki oczekujących na bilet dla każdego warsztatu + dla pyrkonu
-int finished = 0;
+int zegar=0; // zegar lamporta
+int number_of_tickets=3; // liczba biletów na pyrkon
+int number_of_workshops=2;  // liczba warsztatów
+int number_of_people_per_workshop = 2; // liczba uczestników na warsztat
+int number_of_participants = 4; // liczba uczestników
+int number_of_workshops_per_participant=2; // liczba warsztatów na uczestnika
+int number_of_acks[4] = {0,0,0,0}; // dla kazdego uczestnika liczymy liczbe acks
+int waiting_queue[3][4]; // kolejka oczekujących na bilet uczestników dla kazdego warsztatu + dla pyrkonu
+int indexes_for_waiting_queue[3]; // indeksy dla kolejki oczekujących na bilet dla każdego warsztatu + dla pyrkonu
+int finished = 0; // liczba uczestników, którzy zakończyli warsztaty
+int my_current_workshop[4] = {0,0,0,0}; // dla każdego uczestnika zapisujemy na który warsztat z listy sie obecnie wybiera (chodzi o indeks)
+int my_workshops[4][3]; // dla każdego uczestnika zapisujemy listę warsztatów, na które się zapisał (zacyznamy od 0 - pyrkonu) 
+int on_pyrkon[4] = {0,0,0,0}; // dla każdego uczestnika zapisujemy czy jest na pyrkonie
 
 void finalizuj()
 {
