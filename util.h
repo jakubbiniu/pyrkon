@@ -11,7 +11,7 @@ typedef struct {
     int workshop_id;
 } packet_t;
 /* packet_t ma trzy pola, więc NITEMS=3. Wykorzystane w inicjuj_typ_pakietu */
-#define NITEMS 3
+#define NITEMS 4
 
 /* Typy wiadomości */
 /* TYPY PAKIETÓW */

@@ -30,7 +30,7 @@ int number_of_participants=5;
 int number_of_workshops_per_participant=2;
 int number_of_acks[5]; // dla kazdego uczestnika liczymy liczbe acks
 int waiting_queue[4][5]; // kolejka oczekujących na bilet uczestników dla kazdego warsztatu + dla pyrkonu
-indexes_for_waiting_queue[4]; // indeksy dla kolejki oczekujących na bilet dla każdego warsztatu + dla pyrkonu
+int indexes_for_waiting_queue[4]; // indeksy dla kolejki oczekujących na bilet dla każdego warsztatu + dla pyrkonu
 int finished = 0;
 
 void finalizuj()
