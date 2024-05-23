@@ -76,7 +76,7 @@ void mainLoop()
 		break;
 
 	    case InWantPyrkon:
-		println("Czekam na wejście na pyrkon")
+		println("mój ack count: %d Czekam na wejście na pyrkon", number_of_acks[rank])
 		// tutaj zapewne jakiś semafor albo zmienna warunkowa
 		// bo aktywne czekanie jest BUE
 		if (number_of_acks[rank] >= number_of_participants - number_of_tickets){
@@ -88,7 +88,6 @@ void mainLoop()
 		} 
 		break;
 		case InWant:
-
 		println("mój ack_count %d Czekam na wejście na warsztat %d", number_of_acks[rank],workshop_id)
 		// tutaj zapewne jakiś semafor albo zmienna warunkowa
 		// bo aktywne czekanie jest BUE

@@ -60,6 +60,7 @@ void sendPacket(packet_t *pkt, int destination, int tag, int workshop_id_request
         freepkt = 1;
     }
     pkt->src = rank;
+    pkt->workshop_id = workshop_id_request;
 
     pthread_mutex_lock(&zegarMut);
     zegar++;
