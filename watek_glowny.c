@@ -103,7 +103,7 @@ void mainLoop()
 		    sleep(5);
 		//if ( perc < 25 ) {
 		    debug("Perc: %d", perc);
-		    println("Wychodzę z warsztatu %d", workshop_id)
+		    println("Wychodzę z warsztatu %d", my_workshops[rank][workshop_count[rank]-1])
 		    debug("Zmieniam stan na wysyłanie");
 		    
 		    pkt->data = perc;
@@ -117,7 +117,7 @@ void mainLoop()
 				sendPacket( 0, waiting_queue[workshop_id][i], ACK, workshop_id);
 			}
 			indexes_for_waiting_queue[workshop_id] = 0;
-			if (workshop_count[rank] == number_of_workshops_per_participant){
+			if (workshop_count[rank] > number_of_workshops_per_participant){
 				println("Wychodzę z pyrkonu")
 				on_pyrkon[rank] = 0;
 				debug("Zmieniam stan na wysyłanie");
