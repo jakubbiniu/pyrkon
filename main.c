@@ -23,13 +23,13 @@ int ackCount = 0;
 pthread_t threadKom;
 
 int zegar=0;
-int number_of_tickets=4;
+int number_of_tickets=2;
 int number_of_workshops=3;
-int number_of_people_per_workshop=2;
-int number_of_participants=5;
+int number_of_people_per_workshop=1;
+int number_of_participants=3;
 int number_of_workshops_per_participant=2;
-int number_of_acks[5]; // dla kazdego uczestnika liczymy liczbe acks
-int waiting_queue[4][5]; // kolejka oczekujących na bilet uczestników dla kazdego warsztatu + dla pyrkonu
+int number_of_acks[3]; // dla kazdego uczestnika liczymy liczbe acks
+int waiting_queue[4][3]; // kolejka oczekujących na bilet uczestników dla kazdego warsztatu + dla pyrkonu
 int indexes_for_waiting_queue[4]; // indeksy dla kolejki oczekujących na bilet dla każdego warsztatu + dla pyrkonu
 int finished = 0;
 

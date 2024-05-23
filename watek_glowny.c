@@ -1,6 +1,72 @@
 #include "main.h"
 #include "watek_glowny.h"
 
+void Enter(int workshop_id, int number_of_tickets_for_requested, packet_t pakiet, MPI_Status status)
+{
+    zegar += 1;
+    for (int i=0;i<=number_of_participants-1;i++){
+        if (i!=rank){
+            sendPacket( number_of_tickets, i, REQUEST, workshop_id);
+        }
+    }
+    number_of_acks[rank] = 0;
+    while (number_of_acks[rank] < number_of_participants - number_of_tickets_for_requested){
+        MPI_Recv( &pakiet, 1, MPI_PAKIET_T, MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD, &status);
+        pthread_mutex_lock(&zegarMut);
+        if(zegar >= pakiet.ts){
+            zegar++;
+        }
+        else{
+            zegar = pakiet.ts + 1;
+        }
+        pthread_mutex_unlock(&zegarMut);
+        if (status.MPI_TAG == ACK && workshop_id == pakiet.workshop_id){ 
+            number_of_acks[rank]++;
+        }
+        else if (status.MPI_TAG == REQUEST){ 
+            if(workshop_id == pakiet.workshop_id){
+                if (pakiet.ts < zegar || (pakiet.ts == zegar && pakiet.src < rank)){
+                    sendPacket( 0, status.MPI_SOURCE, ACK, workshop_id );
+                }
+                else{
+                    waiting_queue[workshop_id][indexes_for_waiting_queue[workshop_id]] = rank;
+                    indexes_for_waiting_queue[workshop_id]++;
+                    number_of_acks[rank]++;
+                }
+            }
+            else{
+                sendPacket( 0, status.MPI_SOURCE, ACK, pakiet.workshop_id );
+            }
+        }
+        else if(status.MPI_TAG == RELEASE && workshop_id == pakiet.workshop_id){ 
+            if(indexes_for_waiting_queue[workshop_id] > 0){
+                sendPacket( 0, waiting_queue[workshop_id][0], ACK, workshop_id );
+                for(int i=0; i<indexes_for_waiting_queue[workshop_id]-1; i++){
+                    waiting_queue[workshop_id][i] = waiting_queue[workshop_id][i+1];
+                }
+                indexes_for_waiting_queue[workshop_id]--;
+            }
+        }
+    }
+}
+
+void Leave(int workshop_id){
+    zegar += 1;
+    for (int i=0;i<=number_of_participants-1;i++){
+        if (i!=rank){
+            sendPacket( 0, i, RELEASE, workshop_id);
+        }
+    }
+    indexes_for_waiting_queue[workshop_id] = 0;
+}
+
+void wait_for_all(){
+    while (finished < number_of_tickets){
+        sleep(1);
+    }
+}
+
+
 void mainLoop()
 {
     srandom(rank);
@@ -15,7 +81,7 @@ void mainLoop()
 	for (int i=0;i<number_of_workshops_per_participant;i++){
 		int candidate = random()%number_of_workshops;
 		for(int j=0;j<i;j++){
-			if (my_workshops[j] == candidate){
+			if (my_workshops[j] == candidate || candidate == 0){
 				candidate = random()%number_of_workshops;
 				j = 0;
 			}
@@ -89,70 +155,4 @@ void mainLoop()
     //         }
     //     sleep(SEC_IN_STATE);
     // }
-}
-
-
-void Enter(int workshop_id, int number_of_tickets_for_requested, packet_t pakiet, MPI_Status status)
-{
-    zegar += 1;
-    for (int i=0;i<=number_of_participants-1;i++){
-        if (i!=rank){
-            sendPacket( number_of_tickets, i, REQUEST, workshop_id);
-        }
-    }
-    number_of_acks[rank] = 0;
-    while (number_of_acks[rank] < number_of_participants - number_of_tickets_for_requested){
-        MPI_Recv( &pakiet, 1, MPI_PAKIET_T, MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD, &status);
-        pthread_mutex_lock(&zegarMut);
-        if(zegar >= pakiet.ts){
-            zegar++;
-        }
-        else{
-            zegar = pakiet.ts + 1;
-        }
-        pthread_mutex_unlock(&zegarMut);
-        if (status.MPI_TAG == ACK && workshop_id == pakiet.workshop_id){ 
-            number_of_acks[rank]++;
-        }
-        else if (status.MPI_TAG == REQUEST){ 
-            if(workshop_id == pakiet.workshop_id){
-                if (pakiet.ts < zegar || (pakiet.ts == zegar && pakiet.src < rank)){
-                    sendPacket( 0, status.MPI_SOURCE, ACK, workshop_id );
-                }
-                else{
-                    waiting_queue[workshop_id][indexes_for_waiting_queue[workshop_id]] = rank;
-                    indexes_for_waiting_queue[workshop_id]++;
-                    number_of_acks[rank]++;
-                }
-            }
-            else{
-                sendPacket( 0, status.MPI_SOURCE, ACK, pakiet.workshop_id );
-            }
-        }
-        else if(status.MPI_TAG == RELEASE && workshop_id == pakiet.workshop_id){ 
-            if(indexes_for_waiting_queue[workshop_id] > 0){
-                sendPacket( 0, waiting_queue[workshop_id][0], ACK, workshop_id );
-                for(int i=0; i<indexes_for_waiting_queue[workshop_id]-1; i++){
-                    waiting_queue[workshop_id][i] = waiting_queue[workshop_id][i+1];
-                }
-                indexes_for_waiting_queue[workshop_id]--;
-            }
-        }
-    }
-}
-
-void Leave(int workshop_id){
-    zegar += 1;
-    for (int i=0;i<=number_of_participants-1;i++){
-        if (i!=rank){
-            sendPacket( 0, i, RELEASE, workshop_id);
-        }
-    }
-    indexes_for_waiting_queue[workshop_id] = 0;
-}
-
-void wait_for_all(){
-    while (finished < number_of_tickets){
-        sleep(1);
-    }
 }

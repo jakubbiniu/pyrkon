@@ -31,8 +31,8 @@ extern int number_of_workshops;
 extern int number_of_people_per_workshop;
 extern int number_of_participants;
 extern int number_of_workshops_per_participant;
-extern int number_of_acks[5];
-extern int waiting_queue[4][5];
+extern int number_of_acks[3];
+extern int waiting_queue[4][3];
 extern int indexes_for_waiting_queue[4];
 extern int finished;
 

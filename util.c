@@ -53,22 +53,35 @@ void inicjuj_typ_pakietu()
 }
 
 /* opis patrz util.h */
-void sendPacket(packet_t *pkt, int destination, int tag, int workshop_id_request)
-{
-    int freepkt=0;
-    if (pkt==0) { pkt = malloc(sizeof(packet_t)); freepkt=1;}
+void sendPacket(packet_t *pkt, int destination, int tag, int workshop_id_request) {
+    int freepkt = 0;
+    if (pkt == NULL) {
+        pkt = (packet_t*) malloc(sizeof(packet_t));
+        if (pkt == NULL) {
+            fprintf(stderr, "Failed to allocate memory for packet\n");
+            exit(EXIT_FAILURE);
+        }
+        pkt->ts = 0; // Initialize to a proper value if necessary
+        pkt->src = 0; // Initialize to a proper value if necessary
+        pkt->data = 0; // Initialize to a proper value if necessary
+        pkt->workshop_id = 0; // Initialize to a proper value if necessary
+        freepkt = 1;
+    }
+    pkt->workshop_id = workshop_id_request; // Ensure this is always set
     pkt->src = rank;
-    pkt->workshop_id = workshop_id_request;
-    MPI_Send( pkt, 1, MPI_PAKIET_T, destination, tag, MPI_COMM_WORLD);
+
+    MPI_Send(pkt, 1, MPI_PAKIET_T, destination, tag, MPI_COMM_WORLD);
 
     pthread_mutex_lock(&zegarMut);
     zegar++;
     pkt->ts += 1;
     pthread_mutex_unlock(&zegarMut);
 
-    debug("Wysyłam %s do %d\n", tag2string( tag), destination);
+    debug("Wysyłam %s do %d\n", tag2string(tag), destination);
     if (freepkt) free(pkt);
 }
+
+
 
 void changeState( state_t newState )
 {
