@@ -27,23 +27,23 @@ void *startKomWatek(void *ptr)
         workshop_id = my_workshops[rank][workshop_count[rank]];
         println("aktualny wartsztat na liście: %d", workshop_id);  
         if(status.MPI_TAG == ACK){
-            println("Dostałem ACK od %d na warsztat %d", status.MPI_SOURCE, pakiet.workshop_id);
+           // println("Dostałem ACK od %d na warsztat %d", status.MPI_SOURCE, pakiet.workshop_id);
         }
         if (status.MPI_TAG == ACK && pakiet.workshop_id == workshop_id){
             if(pakiet.workshop_id !=0){
-                println("Dostałem ACK od %d na warsztat %d", status.MPI_SOURCE, workshop_id);
+                //println("Dostałem ACK od %d na warsztat %d", status.MPI_SOURCE, workshop_id);
             }
             else{
-                println("Dostałem ACK od %d na pyrkon", status.MPI_SOURCE);
+                //println("Dostałem ACK od %d na pyrkon", status.MPI_SOURCE);
             }
             number_of_acks[rank] += 1;
         }
         else if (status.MPI_TAG == REQUEST){
             if(pakiet.workshop_id !=0){
-                println("Dostałem REQUEST od %d na warsztat %d", status.MPI_SOURCE, pakiet.workshop_id);
+                //println("Dostałem REQUEST od %d na warsztat %d", status.MPI_SOURCE, pakiet.workshop_id);
             }
             else{
-                println("Dostałem REQUEST od %d na pyrkon", status.MPI_SOURCE);
+                //println("Dostałem REQUEST od %d na pyrkon", status.MPI_SOURCE);
             }
             pthread_mutex_lock(&zegarMut);
             if(zegar >= pakiet.ts){

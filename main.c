@@ -24,7 +24,7 @@ int ackCount = 0;
 pthread_t threadKom;
 
 int zegar=0; // zegar lamporta
-int number_of_tickets=3; // liczba biletów na pyrkon
+int number_of_tickets=1; // liczba biletów na pyrkon
 int number_of_workshops=2;  // liczba warsztatów
 int number_of_people_per_workshop = 2; // liczba uczestników na warsztat
 int number_of_participants = 4; // liczba uczestników
