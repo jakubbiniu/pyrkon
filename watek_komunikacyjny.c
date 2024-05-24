@@ -27,7 +27,7 @@ void *startKomWatek(void *ptr)
         workshop_id = my_workshops[rank][workshop_count[rank]];
         println("aktualny wartsztat na liście: %d", workshop_id);  
         if(status.MPI_TAG == ACK){
-            println("UWAGA: Dostałem ACK od %d na warsztat %d", status.MPI_SOURCE, pakiet.workshop_id);
+            println("Dostałem ACK od %d na warsztat %d", status.MPI_SOURCE, pakiet.workshop_id);
         }
         if (status.MPI_TAG == ACK && pakiet.workshop_id == workshop_id){
             if(pakiet.workshop_id !=0){

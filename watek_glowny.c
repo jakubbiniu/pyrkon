@@ -2,9 +2,7 @@
 #include "watek_glowny.h"
 
 void reset_variables() {
-    zegar = 0;
     for (int i = 0; i < number_of_participants; i++) {
-		// finished[i]=0;
         number_of_acks[i] = 0;
         workshop_count[i] = 0;
         on_pyrkon[i] = 0;
@@ -18,7 +16,6 @@ void reset_variables() {
             waiting_queue[i][j] = 0;
         }
     }
-	finished=0;
 }
 
 
@@ -42,7 +39,7 @@ void mainLoop()
 			int candidate = random()%number_of_workshops + 1;
 			for(int j=0;j<i;j++){
 				if (my_workshops[rank][j] == candidate){
-					candidate = random()%number_of_workshops;
+					candidate = random()%number_of_workshops + 1;
 					j = 0;
 				}
 			}
@@ -149,7 +146,7 @@ void mainLoop()
 					}
 				}
 				for (int i=0;i<indexes_for_waiting_queue[0];i++){
-					println("wysylam do kolejki na pyrkon do %d", i);
+					println("wysylam ACK na pyrkon do %d", i);
 					sendPacket( 0, waiting_queue[workshop_id][i], ACK, 0);
 				}
 				indexes_for_waiting_queue[0] = 0;
@@ -163,13 +160,6 @@ void mainLoop()
 		case FinishedWorkshops:
 			println("Koniec warsztatów")
 			MPI_Barrier(MPI_COMM_WORLD);
-			// pthread_mutex_lock(&finishedMut);
-			// finished += 1;
-			// pthread_mutex_unlock(&finishedMut);
-			// while(finished < number_of_participants){
-			// 	sleep(SEC_IN_STATE);
-			// 	println("ja %d mam finshed %d", rank, finished);
-			// }
 			if(rank==1){
 				reset_variables();
 			}

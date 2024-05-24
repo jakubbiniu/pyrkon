@@ -36,7 +36,6 @@ extern int number_of_workshops_per_participant;
 extern int number_of_acks[4];
 extern int waiting_queue[3][4];
 extern int indexes_for_waiting_queue[3];
-extern int finished;
 extern int workshop_count[4];
 extern int my_workshops[4][3];
 extern int on_pyrkon[4];
