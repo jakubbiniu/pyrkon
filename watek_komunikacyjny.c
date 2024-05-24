@@ -25,7 +25,7 @@ void *startKomWatek(void *ptr)
         pthread_mutex_unlock(&zegarMut);
 
         workshop_id = my_workshops[rank][workshop_count[rank]];
-        println("ubiegam sie o: %d", workshop_id);  
+        println("aktualny wartsztat na liście: %d", workshop_id);  
         if(status.MPI_TAG == ACK){
             println("UWAGA: Dostałem ACK od %d na warsztat %d", status.MPI_SOURCE, pakiet.workshop_id);
         }
@@ -59,7 +59,7 @@ void *startKomWatek(void *ptr)
                     println("Wysyłam ACK do %d na warsztat %d", status.MPI_SOURCE, workshop_id);
                 }
                 else{
-                    waiting_queue[workshop_id][indexes_for_waiting_queue[workshop_id]] = rank;
+                    waiting_queue[workshop_id][indexes_for_waiting_queue[workshop_id]] = status.MPI_SOURCE;
                     indexes_for_waiting_queue[workshop_id] += 1;
                     number_of_acks[rank] += 1;
                     println("Dodaję %d do kolejki oczekujących na warsztat %d", status.MPI_SOURCE, pakiet.workshop_id);
@@ -69,6 +69,11 @@ void *startKomWatek(void *ptr)
                 if(pakiet.workshop_id != 0 || on_pyrkon[rank] == 0){
                     sendPacket( 0, status.MPI_SOURCE, ACK, pakiet.workshop_id);
                     println("Wysyłam ACK do %d na warsztat %d bo ubiegam sie o inny", status.MPI_SOURCE, pakiet.workshop_id);
+                }
+                else if(pakiet.workshop_id ==0 && on_pyrkon[rank]==1){
+                    waiting_queue[0][indexes_for_waiting_queue[0]] = status.MPI_SOURCE;
+                    indexes_for_waiting_queue[0] += 1;
+                    println("Dodaję %d do kolejki oczekujących na warsztat %d", status.MPI_SOURCE, pakiet.workshop_id);
                 }
                 else{
                     println("Nie mogę wysłać ACK do %d na warsztat %d", status.MPI_SOURCE, pakiet.workshop_id);

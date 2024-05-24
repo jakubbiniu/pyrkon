@@ -15,6 +15,7 @@ state_t stan=BeginPyrkon;
  */
 pthread_mutex_t stateMut = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t zegarMut = PTHREAD_MUTEX_INITIALIZER;
+pthread_mutex_t finishedMut = PTHREAD_MUTEX_INITIALIZER;
 
 struct tagNames_t{
     const char *name;

@@ -1,6 +1,26 @@
 #include "main.h"
 #include "watek_glowny.h"
 
+void reset_variables() {
+    zegar = 0;
+    for (int i = 0; i < number_of_participants; i++) {
+		// finished[i]=0;
+        number_of_acks[i] = 0;
+        workshop_count[i] = 0;
+        on_pyrkon[i] = 0;
+        for (int j = 0; j < number_of_people_per_workshop+1; j++) {
+            my_workshops[i][j] = 0;
+        }
+    }
+    for (int i = 0; i < number_of_workshops + 1; i++) {
+        indexes_for_waiting_queue[i] = 0;
+        for (int j = 0; j < number_of_participants; j++) {
+            waiting_queue[i][j] = 0;
+        }
+    }
+	finished=0;
+}
+
 
 void mainLoop()
 {
@@ -129,6 +149,7 @@ void mainLoop()
 					}
 				}
 				for (int i=0;i<indexes_for_waiting_queue[0];i++){
+					println("wysylam do kolejki na pyrkon do %d", i);
 					sendPacket( 0, waiting_queue[workshop_id][i], ACK, 0);
 				}
 				indexes_for_waiting_queue[0] = 0;
@@ -140,12 +161,20 @@ void mainLoop()
 		    // free(pkt);
 		break;
 		case FinishedWorkshops:
-		println("Koniec warsztatów")
-		finished++;
-		while(finished < number_of_tickets){
-			sleep(SEC_IN_STATE);
-		}
-		changeState(BeginPyrkon);
+			println("Koniec warsztatów")
+			MPI_Barrier(MPI_COMM_WORLD);
+			// pthread_mutex_lock(&finishedMut);
+			// finished += 1;
+			// pthread_mutex_unlock(&finishedMut);
+			// while(finished < number_of_participants){
+			// 	sleep(SEC_IN_STATE);
+			// 	println("ja %d mam finshed %d", rank, finished);
+			// }
+			if(rank==1){
+				reset_variables();
+			}
+			println("KONIEC PYRKONU!!!")
+			changeState(BeginPyrkon);
 		break;
 	    default: 
 		break;
