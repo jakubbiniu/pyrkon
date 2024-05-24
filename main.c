@@ -13,7 +13,6 @@
  */
 int rank, size;
 int workshop_id;
-int ackCount = 0;
 /* 
  * Każdy proces ma dwa wątki - główny i komunikacyjny
  * w plikach, odpowiednio, watek_glowny.c oraz (siurpryza) watek_komunikacyjny.c
@@ -37,6 +36,7 @@ int workshop_count[4] = {0,0,0,0}; // dla każdego uczestnika liczymy liczbę wa
 int my_workshops[4][3]; // dla każdego uczestnika zapisujemy listę warsztatów, na które się zapisał (zacyznamy od 0 - pyrkonu) 
 int on_pyrkon[4] = {0,0,0,0}; // dla każdego uczestnika zapisujemy czy jest na pyrkonie
 
+
 void finalizuj()
 {
     pthread_mutex_destroy( &stateMut);
@@ -45,6 +45,7 @@ void finalizuj()
     pthread_join(threadKom,NULL);
     MPI_Type_free(&MPI_PAKIET_T);
     MPI_Finalize();
+    
 }
 
 void check_thread_support(int provided)
@@ -79,6 +80,7 @@ int main(int argc, char **argv)
     MPI_Init_thread(&argc, &argv, MPI_THREAD_MULTIPLE, &provided);
     check_thread_support(provided);
     srand(rank);
+
     /* zob. util.c oraz util.h */
     inicjuj_typ_pakietu(); // tworzy typ pakietu
     MPI_Comm_size(MPI_COMM_WORLD, &size);

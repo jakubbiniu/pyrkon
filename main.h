@@ -10,17 +10,11 @@
 
 #include "util.h"
 /* boolean */
-#define TRUE 1
-#define FALSE 0
 #define SEC_IN_STATE 1
-#define STATE_CHANGE_PROB 10
-
-#define ROOT 0
 
 /* tutaj TYLKO zapowiedzi - definicje w main.c */
 extern int rank;
 extern int size;
-extern int ackCount;
 extern pthread_t threadKom;
 extern int workshop_id;
 
@@ -32,10 +26,10 @@ extern int number_of_workshops;
 extern int number_of_people_per_workshop;
 extern int number_of_participants;
 extern int number_of_workshops_per_participant;
+extern int finished;
 extern int number_of_acks[4];
 extern int waiting_queue[3][4];
 extern int indexes_for_waiting_queue[3];
-extern int finished;
 extern int workshop_count[4];
 extern int my_workshops[4][3];
 extern int on_pyrkon[4];

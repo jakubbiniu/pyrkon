@@ -1,6 +1,24 @@
 #include "main.h"
 #include "watek_glowny.h"
 
+void reset_variables() {
+    zegar = 0;
+    for (int i = 0; i < number_of_participants; i++) {
+        number_of_acks[i] = 0;
+        workshop_count[i] = 0;
+        on_pyrkon[i] = 0;
+        for (int j = 0; j < number_of_people_per_workshop+1; j++) {
+            my_workshops[i][j] = 0;
+        }
+    }
+    for (int i = 0; i < number_of_workshops + 1; i++) {
+        indexes_for_waiting_queue[i] = 0;
+        for (int j = 0; j < number_of_participants; j++) {
+            waiting_queue[i][j] = 0;
+        }
+    }
+    finished = 0;
+}
 
 void mainLoop()
 {
@@ -9,7 +27,6 @@ void mainLoop()
     int perc;
 
 	MPI_Status status;
-    int is_message = FALSE;
     packet_t pakiet;
 
 	packet_t *pkt = malloc(sizeof(packet_t));
@@ -35,7 +52,7 @@ void mainLoop()
 
 	    case InRun: 
 		perc = random()%100;
-		if ( perc < 25 ) {
+		//if ( perc < 25 ) {
 		    debug("Perc: %d", perc);
 			if(workshop_count[rank] == 0){
 				println("Chcę wejść na pyrkon")
@@ -71,7 +88,7 @@ void mainLoop()
 					   // okienko zamyka się :q
 					   // ZOB. regułę tags: w Makefile (naciśnij gf gdy kursor jest na nazwie pliku)
 		    free(pkt);
-		} // a skoro już jesteśmy przy komendach vi, najedź kursorem na } i wciśnij %  (niestety głupieje przy komentarzach :( )
+		//} // a skoro już jesteśmy przy komendach vi, najedź kursorem na } i wciśnij %  (niestety głupieje przy komentarzach :( )
 		debug("Skończyłem myśleć");
 		break;
 
@@ -140,11 +157,14 @@ void mainLoop()
 		    // free(pkt);
 		break;
 		case FinishedWorkshops:
-		println("Koniec warsztatów")
-		finished++;
+		println("Koniec warsztatów");
+		finished += 1;
 		while(finished < number_of_tickets){
 			sleep(SEC_IN_STATE);
 		}
+		println("KONIEC PYRKONU ROZPOCZYNAM NOWY ...");
+        reset_variables();
+		sleep(5);
 		changeState(BeginPyrkon);
 		break;
 	    default: 
