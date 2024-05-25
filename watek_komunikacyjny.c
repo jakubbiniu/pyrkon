@@ -54,7 +54,7 @@ void *startKomWatek(void *ptr)
                 else{
                     waiting_queue[workshop_id][indexes_for_waiting_queue[workshop_id]] = status.MPI_SOURCE;
                     indexes_for_waiting_queue[workshop_id] += 1;
-                    number_of_acks[rank] += 1;
+                    number_of_acks[rank] += 1; // żeby nie czekać na ACK od tego co wysłał request
                     println("Dodaję %d do kolejki oczekujących na warsztat %d", status.MPI_SOURCE, pakiet.workshop_id);
                 }
             }

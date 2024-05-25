@@ -25,6 +25,8 @@ void mainLoop()
     int tag;
     int perc;
 
+	int previous_workshop_id;
+
 	MPI_Status status;
     int is_message = FALSE;
     packet_t pakiet;
@@ -123,7 +125,8 @@ void mainLoop()
 		    sleep(5);
 		//if ( perc < 25 ) {
 		    debug("Perc: %d", perc);
-		    println("Wychodzę z warsztatu %d", my_workshops[rank][workshop_count[rank]-1])
+			previous_workshop_id = my_workshops[rank][workshop_count[rank]-1];
+		    println("Wychodzę z warsztatu %d", previous_workshop_id)
 		    debug("Zmieniam stan na wysyłanie");
 		    
 		    pkt->data = perc;
@@ -132,13 +135,14 @@ void mainLoop()
 			// pthread_mutex_unlock(&zegarMut);
 			for (int i=0;i<=number_of_participants-1;i++){
 				if (i!=rank){
-					sendPacket( 0, i, RELEASE, workshop_id);
+					sendPacket( 0, i, RELEASE, previous_workshop_id);
 				}
 			}
-			for (int i=0;i<indexes_for_waiting_queue[workshop_id];i++){
-				sendPacket( 0, waiting_queue[workshop_id][i], ACK, workshop_id);
+			for (int i=0;i<indexes_for_waiting_queue[previous_workshop_id];i++){
+				println("wysylam ACK na warsztat %d do %d", previous_workshop_id,i);
+				sendPacket( 0, waiting_queue[previous_workshop_id][i], ACK, previous_workshop_id);
 			}
-			indexes_for_waiting_queue[workshop_id] = 0;
+			indexes_for_waiting_queue[previous_workshop_id] = 0;
 			if (workshop_count[rank] > number_of_workshops_per_participant){
 				println("Wychodzę z pyrkonu")
 				on_pyrkon[rank] = 0;
