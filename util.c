@@ -66,6 +66,9 @@ void sendPacket(packet_t *pkt, int destination, int tag, int workshop_id_request
     pthread_mutex_lock(&zegarMut);
     zegar++;
     pkt->ts = zegar;
+    if(tag == REQUEST){
+        local_request_ts[rank][workshop_id] = zegar;
+    }
     pthread_mutex_unlock(&zegarMut);
 
     MPI_Send(pkt, 1, MPI_PAKIET_T, destination, tag, MPI_COMM_WORLD);

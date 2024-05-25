@@ -124,7 +124,9 @@ void mainLoop()
 		    debug("Zmieniam stan na wysyłanie");
 		    
 		    pkt->data = perc;
-		    zegar += 1;
+			// pthread_mutex_lock(&zegarMut);
+		    // zegar += 1;
+			// pthread_mutex_unlock(&zegarMut);
 			for (int i=0;i<=number_of_participants-1;i++){
 				if (i!=rank){
 					sendPacket( 0, i, RELEASE, workshop_id);
@@ -139,7 +141,9 @@ void mainLoop()
 				on_pyrkon[rank] = 0;
 				debug("Zmieniam stan na wysyłanie");
 				// pkt->data = perc;
-				zegar += 1;
+				// pthread_mutex_lock(&zegarMut);
+				// zegar += 1;
+				// pthread_mutex_unlock(&zegarMut);
 				for (int i=0;i<=number_of_participants-1;i++){
 					if (i!=rank){
 						sendPacket( 0, i, RELEASE, 0);

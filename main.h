@@ -39,6 +39,7 @@ extern int indexes_for_waiting_queue[3];
 extern int workshop_count[4];
 extern int my_workshops[4][3];
 extern int on_pyrkon[4];
+extern int local_request_ts[4][3];
 
 
 /* macro debug - działa jak printf, kiedy zdefiniowano
