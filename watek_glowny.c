@@ -101,6 +101,9 @@ void mainLoop()
 			number_of_acks[rank] = 0;
 			println("Jestem na pyrkonie")
 			on_pyrkon[rank] = 1;
+			for(int i=0;i<indexes_for_waiting_queue[0];i++){
+				println("w kolejce na pyrkonie %d", waiting_queue[0][i])
+			}	
 		    changeState(InRun);
 		} 
 		break;
@@ -140,10 +143,6 @@ void mainLoop()
 				println("Wychodzę z pyrkonu")
 				on_pyrkon[rank] = 0;
 				debug("Zmieniam stan na wysyłanie");
-				// pkt->data = perc;
-				// pthread_mutex_lock(&zegarMut);
-				// zegar += 1;
-				// pthread_mutex_unlock(&zegarMut);
 				for (int i=0;i<=number_of_participants-1;i++){
 					if (i!=rank){
 						sendPacket( 0, i, RELEASE, 0);

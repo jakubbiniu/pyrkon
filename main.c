@@ -24,7 +24,7 @@ int ackCount = 0;
 pthread_t threadKom;
 
 int zegar=0; // zegar lamporta
-int number_of_tickets=1; // liczba biletów na pyrkon
+int number_of_tickets=3; // liczba biletów na pyrkon
 int number_of_workshops=2;  // liczba warsztatów
 int number_of_people_per_workshop = 2; // liczba uczestników na warsztat
 int number_of_participants = 4; // liczba uczestników
@@ -35,7 +35,7 @@ int indexes_for_waiting_queue[3]; // indeksy dla kolejki oczekujących na bilet 
 int workshop_count[4] = {0,0,0,0}; // dla każdego uczestnika liczymy liczbę warsztatów, na których był licząc też pyrkon jako jeden warsztat
 int my_workshops[4][3]; // dla każdego uczestnika zapisujemy listę warsztatów, na które się zapisał (zacyznamy od 0 - pyrkonu) 
 int on_pyrkon[4] = {0,0,0,0}; // dla każdego uczestnika zapisujemy czy jest na pyrkonie
-int local_request_ts[4][3];
+int local_request_ts[4][3][4];
 
 void finalizuj()
 {

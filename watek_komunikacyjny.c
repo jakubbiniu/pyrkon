@@ -47,7 +47,7 @@ void *startKomWatek(void *ptr)
                 println("Dostałem REQUEST od %d na pyrkon", status.MPI_SOURCE);
             }
             if(workshop_id == pakiet.workshop_id){
-                if (pakiet.ts < local_request_ts[rank][workshop_id] || (pakiet.ts == local_request_ts[rank][workshop_id] && pakiet.src < rank)){
+                if (pakiet.ts < local_request_ts[rank][workshop_id][status.MPI_SOURCE] || (pakiet.ts == local_request_ts[rank][workshop_id][status.MPI_SOURCE] && status.MPI_SOURCE < rank)){
                     sendPacket( 0, status.MPI_SOURCE, ACK, workshop_id);
                     println("Wysyłam ACK do %d na warsztat %d", status.MPI_SOURCE, workshop_id);
                 }
@@ -74,13 +74,13 @@ void *startKomWatek(void *ptr)
             }
         }
         else if(status.MPI_TAG == RELEASE && pakiet.workshop_id == workshop_id){
-            if(indexes_for_waiting_queue[workshop_id] > 0){
-                sendPacket( 0, waiting_queue[workshop_id][0], ACK, workshop_id );
-                for(int i=0; i<indexes_for_waiting_queue[workshop_id]-1; i++){
-                    waiting_queue[workshop_id][i] = waiting_queue[workshop_id][i+1];
-                }
-                indexes_for_waiting_queue[workshop_id] -= 1;
-            }
+            // if(indexes_for_waiting_queue[workshop_id] > 0){
+            //     sendPacket( 0, waiting_queue[workshop_id][0], ACK, workshop_id );
+            //     for(int i=0; i<indexes_for_waiting_queue[workshop_id]-1; i++){
+            //         waiting_queue[workshop_id][i] = waiting_queue[workshop_id][i+1];
+            //     }
+            //     indexes_for_waiting_queue[workshop_id] -= 1;
+            // }
         }
     }
 }

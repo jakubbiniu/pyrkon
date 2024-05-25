@@ -67,7 +67,7 @@ void sendPacket(packet_t *pkt, int destination, int tag, int workshop_id_request
     zegar++;
     pkt->ts = zegar;
     if(tag == REQUEST){
-        local_request_ts[rank][workshop_id] = zegar;
+        local_request_ts[rank][workshop_id][destination] = zegar;
     }
     pthread_mutex_unlock(&zegarMut);
 
