@@ -28,7 +28,7 @@ void mainLoop()
 	int previous_workshop_id;
 
 	MPI_Status status;
-    int is_message = FALSE;
+    // int is_message = FALSE;
     packet_t pakiet;
 
 	packet_t *pkt = malloc(sizeof(packet_t));

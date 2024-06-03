@@ -21,7 +21,7 @@ extern int workshop_id;
 
 extern pthread_mutex_t zegarMut;
 extern pthread_mutex_t finishedMut;
-
+extern int zegar;
 extern int number_of_tickets;
 extern int number_of_workshops;
 extern int number_of_people_per_workshop;
