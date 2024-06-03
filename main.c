@@ -13,7 +13,6 @@
  */
 int rank, size;
 int workshop_id;
-int ackCount = 0;
 /* 
  * Każdy proces ma dwa wątki - główny i komunikacyjny
  * w plikach, odpowiednio, watek_glowny.c oraz (siurpryza) watek_komunikacyjny.c
@@ -24,18 +23,18 @@ int ackCount = 0;
 pthread_t threadKom;
 
 int zegar=0; // zegar lamporta
-int number_of_tickets=3; // liczba biletów na pyrkon
-int number_of_workshops=2;  // liczba warsztatów
-int number_of_people_per_workshop = 1; // liczba uczestników na warsztat
-int number_of_participants = 4; // liczba uczestników
-int number_of_workshops_per_participant=2; // liczba warsztatów na uczestnika
-int number_of_acks[4] = {0,0,0,0}; // dla kazdego uczestnika liczymy liczbe acks
-int waiting_queue[3][4]; // kolejka oczekujących na bilet uczestników dla kazdego warsztatu + dla pyrkonu
-int indexes_for_waiting_queue[3]; // indeksy dla kolejki oczekujących na bilet dla każdego warsztatu + dla pyrkonu
-int workshop_count[4] = {0,0,0,0}; // dla każdego uczestnika liczymy liczbę warsztatów, na których był licząc też pyrkon jako jeden warsztat
-int my_workshops[4][3]; // dla każdego uczestnika zapisujemy listę warsztatów, na które się zapisał (zacyznamy od 0 - pyrkonu) 
-int on_pyrkon[4] = {0,0,0,0}; // dla każdego uczestnika zapisujemy czy jest na pyrkonie
-int local_request_ts[4][3][4];
+int number_of_tickets=0; // liczba biletów na pyrkon
+int number_of_workshops=0;  // liczba warsztatów
+int number_of_people_per_workshop = 0; // liczba uczestników na warsztat
+int number_of_participants = 0; // liczba uczestników
+int number_of_workshops_per_participant=0; // liczba warsztatów na uczestnika
+int *number_of_acks; // dla kazdego uczestnika liczymy liczbe acks
+int **waiting_queue; // kolejka oczekujących na bilet uczestników dla kazdego warsztatu + dla pyrkonu
+int *indexes_for_waiting_queue; // indeksy dla kolejki oczekujących na bilet dla każdego warsztatu + dla pyrkonu
+int *workshop_count; // dla każdego uczestnika liczymy liczbę warsztatów, na których był licząc też pyrkon jako jeden warsztat
+int **my_workshops; // dla każdego uczestnika zapisujemy listę warsztatów, na które się zapisał (zacyznamy od 0 - pyrkonu) 
+int *on_pyrkon; // dla każdego uczestnika zapisujemy czy jest na pyrkonie
+int ***local_request_ts;
 
 void finalizuj()
 {
@@ -45,6 +44,52 @@ void finalizuj()
     pthread_join(threadKom,NULL);
     MPI_Type_free(&MPI_PAKIET_T);
     MPI_Finalize();
+
+    free(number_of_acks);
+    for (int i = 0; i < number_of_workshops + 1; ++i) {
+        free(waiting_queue[i]);
+    }
+    free(waiting_queue);
+    free(indexes_for_waiting_queue);
+    free(workshop_count);
+    for (int i = 0; i < number_of_participants; ++i) {
+        free(my_workshops[i]);
+    }
+    free(my_workshops);
+    free(on_pyrkon);
+    for (int i = 0; i < number_of_participants; ++i) {
+        for (int j = 0; j < number_of_workshops + 1; ++j) {
+            free(local_request_ts[i][j]);
+        }
+        free(local_request_ts[i]);
+    }
+    free(local_request_ts);
+}
+
+void initialize_arrays() {
+    number_of_acks = (int *)malloc(number_of_participants * sizeof(int));
+    waiting_queue = (int **)malloc((number_of_workshops + 1) * sizeof(int *));
+    for (int i = 0; i < number_of_workshops + 1; ++i) {
+        waiting_queue[i] = (int *)malloc(number_of_participants * sizeof(int));
+    }
+    indexes_for_waiting_queue = (int *)malloc((number_of_workshops + 1) * sizeof(int));
+    workshop_count = (int *)malloc(number_of_participants * sizeof(int));
+    my_workshops = (int **)malloc(number_of_participants * sizeof(int *));
+    for (int i = 0; i < number_of_participants; ++i) {
+        my_workshops[i] = (int *)malloc((number_of_workshops + 1) * sizeof(int));
+    }
+    on_pyrkon = (int *)malloc(number_of_participants * sizeof(int));
+    local_request_ts = (int ***)malloc(number_of_participants * sizeof(int **));
+    for (int i = 0; i < number_of_participants; ++i) {
+        local_request_ts[i] = (int **)malloc((number_of_workshops + 1) * sizeof(int *));
+        for (int j = 0; j < number_of_workshops + 1; ++j) {
+            local_request_ts[i][j] = (int *)malloc(number_of_participants * sizeof(int));
+        }
+    }
+}
+
+void print_usage(const char *program_name) {
+    printf("Użyj: %s <tickets> <workshops> <people_per_workshop> <participants> <workshops_per_participant>\n", program_name);
 }
 
 void check_thread_support(int provided)
@@ -74,6 +119,21 @@ void check_thread_support(int provided)
 
 int main(int argc, char **argv)
 {
+     if (argc != 6) {
+        print_usage(argv[0]);
+        return EXIT_FAILURE;
+    }
+
+    number_of_tickets = atoi(argv[1]);
+    number_of_workshops = atoi(argv[2]);
+    number_of_people_per_workshop = atoi(argv[3]);
+    number_of_participants = atoi(argv[4]);
+    number_of_workshops_per_participant = atoi(argv[5]);
+
+
+    initialize_arrays();
+
+
     MPI_Status status;
     int provided;
     MPI_Init_thread(&argc, &argv, MPI_THREAD_MULTIPLE, &provided);

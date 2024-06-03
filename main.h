@@ -10,36 +10,32 @@
 
 #include "util.h"
 /* boolean */
-#define TRUE 1
-#define FALSE 0
 #define SEC_IN_STATE 1
 #define STATE_CHANGE_PROB 10
-
-#define ROOT 0
 
 /* tutaj TYLKO zapowiedzi - definicje w main.c */
 extern int rank;
 extern int size;
-extern int ackCount;
 extern pthread_t threadKom;
 extern int workshop_id;
 
 extern pthread_mutex_t zegarMut;
 extern pthread_mutex_t finishedMut;
 
-extern int zegar;
 extern int number_of_tickets;
 extern int number_of_workshops;
 extern int number_of_people_per_workshop;
 extern int number_of_participants;
 extern int number_of_workshops_per_participant;
-extern int number_of_acks[4];
-extern int waiting_queue[3][4];
-extern int indexes_for_waiting_queue[3];
-extern int workshop_count[4];
-extern int my_workshops[4][3];
-extern int on_pyrkon[4];
-extern int local_request_ts[4][3][4];
+extern int *number_of_acks;
+extern int **waiting_queue;
+extern int *indexes_for_waiting_queue;
+extern int *workshop_count;
+extern int **my_workshops;
+extern int *on_pyrkon;
+extern int ***local_request_ts;
+
+void initialize_arrays();
 
 
 /* macro debug - działa jak printf, kiedy zdefiniowano
