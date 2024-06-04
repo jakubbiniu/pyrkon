@@ -1,12 +1,5 @@
-ZADANIE:
-Zaimplementować zegary lamporta oraz dowolny algorytm dostępu do sekcji krytycznej.
-Zaimplementować wyświetlanie zegarów w makrach println oraz debug.
-1) stworzyć zmienną globalną w jakimś pliku .c oraz zapowiedź (extern) w jakimś pliku .h
-2) zmodyfikować makra println i debug w pliku main.h by wyświetlały zegar lamporta
-3) przy wysyłaniu (sendPacket) pdbijać pole ts i zwiększać lokalny zegary lamporta
-4) przy odbieraniu (wątek komunikacyjny) max( ts, lokalny zegar ) +1
-5) pamiętać o obwarowaniu dostępu do zegara lamporta muteksami
+### Projekt na przetwarzanie rozproszone
+Jakub Binkowski, Jan Wybieralski
 
-CO JEST:
-w struct packet_t jest już pole "ts" - to będzie timestamp.
-Trzeba dodać zmienną clock i obwarować ją muteksami.
+Program jest symulacją Pyrkonu i pokazuje jak uczestnicy wchodzą i wychodzą na event oraz warsztaty.
+Zastosowano zmodyfikowany algorytm Ricarta-Agrawali
