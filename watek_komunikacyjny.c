@@ -24,16 +24,16 @@ void *startKomWatek(void *ptr)
         }
         pthread_mutex_unlock(&zegarMut);
 
-        println("zegar: %d, timestamp %d", zegar, pakiet.ts);
+        // println("zegar: %d, timestamp %d", zegar, pakiet.ts);
 
         workshop_id = my_workshops[rank][workshop_count[rank]];
-        println("aktualny wartsztat na liście: %d", workshop_id);  
+        // println("aktualny wartsztat na liście: %d", workshop_id);  
         if(status.MPI_TAG == ACK){
             if(pakiet.workshop_id !=0){
-                println("Dostałem ACK od %d na warsztat %d", status.MPI_SOURCE, workshop_id);
+                // println("Dostałem ACK od %d na warsztat %d", status.MPI_SOURCE, workshop_id);
             }
             else{
-                println("Dostałem ACK od %d na pyrkon", status.MPI_SOURCE);
+                // println("Dostałem ACK od %d na pyrkon", status.MPI_SOURCE);
             }
         }
         if (status.MPI_TAG == ACK && pakiet.workshop_id == workshop_id){
@@ -41,39 +41,39 @@ void *startKomWatek(void *ptr)
         }
         else if (status.MPI_TAG == REQUEST){
             if(pakiet.workshop_id !=0){
-                println("Dostałem REQUEST od %d na warsztat %d", status.MPI_SOURCE, pakiet.workshop_id);
+                // println("Dostałem REQUEST od %d na warsztat %d", status.MPI_SOURCE, pakiet.workshop_id);
             }
             else{
-                println("Dostałem REQUEST od %d na pyrkon", status.MPI_SOURCE);
+                // println("Dostałem REQUEST od %d na pyrkon", status.MPI_SOURCE);
             }
             if(workshop_id == pakiet.workshop_id){
                 if (pakiet.ts < local_request_ts[rank][workshop_id][status.MPI_SOURCE] || (pakiet.ts == local_request_ts[rank][workshop_id][status.MPI_SOURCE] && status.MPI_SOURCE < rank)){
                     sendPacket( 0, status.MPI_SOURCE, ACK, workshop_id);
-                    println("Wysyłam ACK do %d na warsztat %d", status.MPI_SOURCE, workshop_id);
+                    // println("Wysyłam ACK do %d na warsztat %d", status.MPI_SOURCE, workshop_id);
                 }
                 else{
                     waiting_queue[workshop_id][indexes_for_waiting_queue[workshop_id]] = status.MPI_SOURCE;
                     indexes_for_waiting_queue[workshop_id] += 1;
                     number_of_acks[rank] += 1; // żeby nie czekać na ACK od tego co wysłał request
-                    println("Dodaję %d do kolejki oczekujących na warsztat %d", status.MPI_SOURCE, pakiet.workshop_id);
+                    // println("Dodaję %d do kolejki oczekujących na warsztat %d", status.MPI_SOURCE, pakiet.workshop_id);
                 }
             }
             else{
                 if(pakiet.workshop_id != 0 || on_pyrkon[rank] == 0){
                     sendPacket( 0, status.MPI_SOURCE, ACK, pakiet.workshop_id);
-                    println("Wysyłam ACK do %d na warsztat %d bo ubiegam sie o inny", status.MPI_SOURCE, pakiet.workshop_id);
+                    // println("Wysyłam ACK do %d na warsztat %d bo ubiegam sie o inny", status.MPI_SOURCE, pakiet.workshop_id);
                 }
                 else if(pakiet.workshop_id ==0 && on_pyrkon[rank]==1){
                     waiting_queue[0][indexes_for_waiting_queue[0]] = status.MPI_SOURCE;
                     indexes_for_waiting_queue[0] += 1;
-                    println("Dodaję %d do kolejki oczekujących na warsztat %d", status.MPI_SOURCE, pakiet.workshop_id);
+                    // println("Dodaję %d do kolejki oczekujących na warsztat %d", status.MPI_SOURCE, pakiet.workshop_id);
                 }
                 else{
-                    println("Nie mogę wysłać ACK do %d na warsztat %d", status.MPI_SOURCE, pakiet.workshop_id);
+                    // println("Nie mogę wysłać ACK do %d na warsztat %d", status.MPI_SOURCE, pakiet.workshop_id);
                 }
             }
         }
-        else if(status.MPI_TAG == RELEASE && pakiet.workshop_id == workshop_id){
+        else if(status.MPI_TAG == FINISH){
             // if(indexes_for_waiting_queue[workshop_id] > 0){
             //     sendPacket( 0, waiting_queue[workshop_id][0], ACK, workshop_id );
             //     for(int i=0; i<indexes_for_waiting_queue[workshop_id]-1; i++){
@@ -81,6 +81,7 @@ void *startKomWatek(void *ptr)
             //     }
             //     indexes_for_waiting_queue[workshop_id] -= 1;
             // }
+            finished[rank] +=1;
         }
     }
 }

@@ -34,8 +34,10 @@ extern int *workshop_count;
 extern int **my_workshops;
 extern int *on_pyrkon;
 extern int ***local_request_ts;
+extern int *finished;
 
 void initialize_arrays();
+void free_arrays();
 
 
 /* macro debug - działa jak printf, kiedy zdefiniowano

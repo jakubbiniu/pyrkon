@@ -35,6 +35,7 @@ int *workshop_count; // dla każdego uczestnika liczymy liczbę warsztatów, na 
 int **my_workshops; // dla każdego uczestnika zapisujemy listę warsztatów, na które się zapisał (zacyznamy od 0 - pyrkonu) 
 int *on_pyrkon; // dla każdego uczestnika zapisujemy czy jest na pyrkonie
 int ***local_request_ts;
+int *finished;
 
 void finalizuj()
 {
@@ -44,7 +45,10 @@ void finalizuj()
     pthread_join(threadKom,NULL);
     MPI_Type_free(&MPI_PAKIET_T);
     MPI_Finalize();
+    free_arrays();
+}
 
+void free_arrays(){
     free(number_of_acks);
     for (int i = 0; i < number_of_workshops + 1; ++i) {
         free(waiting_queue[i]);
@@ -64,6 +68,7 @@ void finalizuj()
         free(local_request_ts[i]);
     }
     free(local_request_ts);
+    free(finished);
 }
 
 void initialize_arrays() {
@@ -86,6 +91,7 @@ void initialize_arrays() {
             local_request_ts[i][j] = (int *)malloc(number_of_participants * sizeof(int));
         }
     }
+    finished = (int *)malloc(number_of_participants * sizeof(int));
 }
 
 void print_usage(const char *program_name) {
